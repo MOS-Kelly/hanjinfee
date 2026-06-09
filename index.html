@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수수료 자동 계산기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="calculator-box">
+        <div class="input-group">
+            <label for="calc_type">타입 (선불 / 신용)</label>
+            <select id="calc_type">
+                <option value="선불">선불</option>
+                <option value="신용">신용</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="calc_region">급지</label>
+            <select id="calc_region">
+                <option value="A">A급지</option>
+                <option value="B">B급지</option>
+                <option value="C">C급지</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="calc_fare">운임 입력 (원)</label>
+            <input type="number" id="calc_fare" placeholder="예: 3000">
+        </div>
+
+        <button id="calc_btn">계산하기</button>
+
+        <div class="divider"></div>
+
+        <div class="result-row total">
+            <span>최종 수수료</span>
+            <span class="total-price"><span id="out_result">0</span> 원</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
