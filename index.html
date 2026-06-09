@@ -1,10 +1,82 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수수료 자동 계산기</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* [CSS 스타일] */
+        .calculator-box {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            font-family: sans-serif;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .input-group select, 
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        #calc_btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .divider {
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .result-box {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #f9fafb;
+        }
+        .total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .total-price {
+            color: #e11d48;
+            font-size: 20px;
+        }
+        .notice-box {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #4b5563;
+            line-height: 1.5;
+            text-align: center;
+            max-width: 90%;
+        }
+    </style>
 </head>
 <body>
 
@@ -36,7 +108,7 @@
         <div class="divider"></div>
 
         <div class="result-box">
-            <div style="display: none;"><span id="out_rate">0</span>%</div>
+            <div style="display: none;"><span id="out_rate">0</span></div>
             
             <div class="result-row total">
                 <span>최종 수수료</span>
@@ -50,6 +122,81 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // [자바스크립트 로직]
+        function find_rate(type, region, baseFare) {
+            const thresholds = [0, 1400, 1500, 1600, 1700, 1800, 2000, 2300, 2501, 3500, 4000, 5000];
+            
+            const data_prepaid = {
+                'A': [8, 8, 9, 11, 12, 16, 19, 21, 26.5, 26.5, 31.5, 36.5],
+                'B': [8, 8, 9, 11, 12, 16, 19, 21, 28.5, 28.5, 33.5, 38.5],
+                'C': [8, 8, 9, 11, 12, 16, 19, 21, 30.5, 30.5, 35.5, 40.5]
+            };
+            
+            const data_credit = {
+                'A': [8, 8, 9, 11, 12, 16, 19, 21, 26.5, 26.5, 26.5, 26.5],
+                'B': [8, 8, 9, 11, 12, 16, 19, 21, 28.5, 28.5, 28.5, 28.5],
+                'C': [8, 8, 9, 11, 12, 16, 19, 21, 30.5, 30.5, 30.5, 30.5]
+            };
+
+            if (baseFare >= 6000) {
+                if (type === "선불") {
+                    if (region === 'A') return 39.5;
+                    if (region === 'B') return 41.5;
+                    if (region === 'C') return 43.5;
+                } else {
+                    if (region === 'A') return 26.5;
+                    if (region === 'B') return 28.5;
+                    if (region === 'C') return 30.5;
+                }
+            }
+
+            const targetTable = (type === "선불") ? data_prepaid : data_credit;
+            const regionRates = targetTable[region];
+
+            if (!regionRates) return 0;
+
+            for (let i = thresholds.length - 1; i >= 0; i--) {
+                if (baseFare >= thresholds[i]) {
+                    return regionRates[i];
+                }
+            }
+            
+            return regionRates[0];
+        }
+
+        function run_calculation() {
+            const type = document.getElementById("calc_type").value;
+            const region = document.getElementById("calc_region").value;
+            const fareValue = document.getElementById("calc_fare").value.trim();
+            const fare = parseFloat(fareValue);
+
+            if (isNaN(fare) || fare <= 170) {
+                alert("170원보다 큰 정확한 운임 금액을 입력해주세요.");
+                return;
+            }
+
+            const baseFare = fare - 170;
+            const rate = find_rate(type, region, baseFare);
+            
+            const finalFee = baseFare * (rate / 100) * 0.85;
+
+            const outRateEl = document.getElementById("out_rate");
+            const outResultEl = document.getElementById("out_result");
+            
+            if (outRateEl) outRateEl.innerText = rate;
+            if (outResultEl) {
+                outResultEl.innerText = Math.round(finalFee).toLocaleString();
+            }
+        }
+
+        // 페이지 로드 시 버튼 이벤트 바인딩
+        document.addEventListener("DOMContentLoaded", function() {
+            const calcBtn = document.getElementById('calc_btn');
+            if (calcBtn) {
+                calcBtn.addEventListener('click', run_calculation);
+            }
+        });
+    </script>
 </body>
 </html>
