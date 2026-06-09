@@ -93,3 +93,24 @@ button {
 .callout-notice strong {
   color: #16a34a;
 }
+.notice-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f4faf6; /* 연한 녹색 배경 */
+    border-left: 4px solid #2ecc71; /* 왼쪽 진한 녹색 선 */
+    border-radius: 4px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.notice-box p {
+    margin: 0 0 8px 0;
+}
+.notice-box p:last-child {
+    margin-bottom: 0;
+}
+.notice-box strong {
+    color: #2ecc71;
+}
