@@ -3,34 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>수수료 자동 계산기</title>
+    <title>한진 수수료 계산기</title>
     <style>
         /* [CSS 스타일] */
         .calculator-box {
             max-width: 600px;
             margin: 20px auto;
-            padding: 20px;
+            padding: 25px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 12px;
             background-color: #fff;
             font-family: sans-serif;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* 박스 주변 부드러운 그림자 효과 */
+        }
+        /* 메인 타이틀 스타일 추가 */
+        .main-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-top: 5px;
+            margin-bottom: 25px;
         }
         .input-group {
             margin-bottom: 15px;
         }
         .input-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: bold;
-            color: #333;
+            color: #475569;
         }
         .input-group select, 
         .input-group input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
             box-sizing: border-box;
+            font-size: 16px;
         }
         #calc_btn {
             width: 100%;
@@ -38,49 +49,59 @@
             background-color: #3b82f6;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #calc_btn:hover {
+            background-color: #2563eb; /* 마우스 올렸을 때 살짝 어두워지는 효과 */
         }
         .divider {
-            border-top: 1px solid #eee;
-            margin: 20px 0;
+            border-top: 1px solid #e2e8f0;
+            margin: 25px 0;
         }
         .result-box {
             margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #e5e7eb;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            background-color: #f9fafb;
+            background-color: #f8fafc;
         }
         .total {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-weight: bold;
             font-size: 18px;
         }
         .total-price {
             color: #e11d48;
-            font-size: 20px;
+            font-size: 22px;
         }
         .notice-box {
-            margin: 20px auto;
+            margin: 25px auto 5px auto;
             padding: 15px;
             background-color: #f0fdf4;
             border-left: 4px solid #22c55e;
             border-radius: 4px;
-            font-size: 12px;
-            color: #4b5563;
-            line-height: 1.5;
-            text-align: center;
-            max-width: 90%;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.6;
+            text-align: left; /* 가독성을 위한 좌측 정렬 */
+            max-width: 95%;
+        }
+        .notice-box p {
+            margin: 8px 0;
         }
     </style>
 </head>
 <body>
 
     <div class="calculator-box">
+        <div class="main-title">📦 한진 수수료 계산기</div>
+
         <div class="input-group">
             <label for="calc_type">타입 (선불 / 신용)</label>
             <select id="calc_type">
