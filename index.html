@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>한진 집하 수수료 계산기 </title>
+    <title>한진 집하 수수료 계산기</title>
     <style>
         /* [CSS 스타일] */
         body {
@@ -109,7 +109,7 @@
 
         <div class="input-group">
             <label for="calc_type">타입 (선착불 / 신용)</label>
-            <select id="calc_type">
+            <select id="calc_type" onchange="handleTypeChange()">
                 <option value="선불">선불</option>
                 <option value="신용">신용</option>
             </select>
@@ -117,7 +117,7 @@
 
         <div class="input-group">
             <label for="calc_fare">운임 입력 (원)</label>
-            <input type="number" id="calc_fare" placeholder="예: 3000">
+            <input type="number" id="calc_fare" placeholder="예: 3000" oninput="run_calculation_silent()">
         </div>
 
         <button id="calc_btn">계산하기</button>
@@ -145,7 +145,6 @@
         function find_rate(type, region, baseFare) {
             const thresholds = [0, 1400, 1500, 1600, 1700, 1800, 2000, 2300, 2501, 3500, 4000, 5000];
             
-            // 기존 요율 데이터 전체 온전히 보존
             const data_prepaid = {
                 'A': [8, 8, 9, 11, 12, 16, 19, 21, 26.5, 26.5, 31.5, 36.5],
                 'B': [8, 8, 9, 11, 12, 16, 19, 21, 28.5, 28.5, 33.5, 38.5],
@@ -184,24 +183,43 @@
             return regionRates[0];
         }
 
-        function run_calculation() {
-            // 화면에서 선택한 선불/신용 값 가져오기
+        // 💡 타입 셀렉트 박스 변경 시 호출되는 함수
+        function handleTypeChange() {
+            run_calculation_silent();
+        }
+
+        // 💡 숫자를 타이핑할 때 경고창(Alert) 없이 유연하게 처리해주는 실시간 감지 함수
+        function run_calculation_silent() {
+            const fareValue = document.getElementById("calc_fare").value.trim();
+            const fare = parseFloat(fareValue);
+
+            // 금액이 아직 입력되지 않았거나 170원 이하일 땐 조용히 0원으로 표시
+            if (isNaN(fare) || fare <= 170) {
+                const outResultEl = document.getElementById("out_result");
+                if (outResultEl) outResultEl.innerText = "0";
+                return;
+            }
+            run_calculation(true); // 실시간 연산 모드로 본 함수 실행
+        }
+
+        // 메인 계산 실행 함수 (isSilent 파라미터 추가)
+        function run_calculation(isSilent = false) {
             const type = document.getElementById("calc_type").value;
-            // 급지는 자동으로 'C'급지로 세팅하여 연산
             const region = "C"; 
             
             const fareValue = document.getElementById("calc_fare").value.trim();
             const fare = parseFloat(fareValue);
 
             if (isNaN(fare) || fare <= 170) {
-                alert("170원보다 큰 정확한 운임 금액을 입력해주세요.");
+                // 버튼을 직접 눌렀을 때(isSilent가 false일 때)만 경고창을 띄워줌
+                if (isSilent !== true) {
+                    alert("170원보다 큰 정확한 운임 금액을 입력해주세요.");
+                }
                 return;
             }
 
             const baseFare = fare - 170;
             const rate = find_rate(type, region, baseFare);
-            
-            // 기존 집하 수수료 요율 계산 공식 적용 (최종 금액의 85% 반영 후 반올림)
             const finalFee = baseFare * (rate / 100) * 0.85;
 
             const outRateEl = document.getElementById("out_rate");
@@ -216,7 +234,10 @@
         document.addEventListener("DOMContentLoaded", function() {
             const calcBtn = document.getElementById('calc_btn');
             if (calcBtn) {
-                calcBtn.addEventListener('click', run_calculation);
+                // 버튼을 클릭했을 때는 수동 검증창이 작동하도록 연동
+                calcBtn.addEventListener('click', function() {
+                    run_calculation(false);
+                });
             }
         });
     </script>
