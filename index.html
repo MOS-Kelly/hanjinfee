@@ -14,7 +14,7 @@
             border-radius: 12px;
             background-color: #fff;
             font-family: sans-serif;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* 박스 주변 부드러운 그림자 효과 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
         }
         /* 메인 타이틀 스타일 추가 */
         .main-title {
@@ -56,7 +56,7 @@
             transition: background-color 0.2s;
         }
         #calc_btn:hover {
-            background-color: #2563eb; /* 마우스 올렸을 때 살짝 어두워지는 효과 */
+            background-color: #2563eb; 
         }
         .divider {
             border-top: 1px solid #e2e8f0;
@@ -89,7 +89,7 @@
             font-size: 13px;
             color: #475569;
             line-height: 1.6;
-            text-align: left; /* 가독성을 위한 좌측 정렬 */
+            text-align: left; 
             max-width: 95%;
         }
         .notice-box p {
@@ -132,7 +132,7 @@
             <div style="display: none;"><span id="out_rate">0</span></div>
             
             <div class="result-row total">
-                <span>최종 수수료</span>
+                <span>예상 수수료</span>
                 <span class="total-price"><span id="out_result">0</span> 원</span>
             </div>
         </div>
@@ -211,7 +211,7 @@
             }
         }
 
-        // 페이지 로드 시 버튼 이벤트 바인딩
+        
         document.addEventListener("DOMContentLoaded", function() {
             const calcBtn = document.getElementById('calc_btn');
             if (calcBtn) {
