@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>한진 집하 수수료 계산기</title>
+    <title>한진_학암,화순 집하 수수료 계산기</title>
     <style>
         /* [CSS 스타일] */
+        body {
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 10px;
+        }
         .calculator-box {
             max-width: 600px;
             margin: 20px auto;
@@ -16,7 +21,7 @@
             font-family: sans-serif;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); 
         }
-        /* 메인 타이틀 스타일 추가 */
+        /* 메인 타이틀 스타일 */
         .main-title {
             text-align: center;
             font-size: 24px;
@@ -34,7 +39,6 @@
             font-weight: bold;
             color: #475569;
         }
-        .input-group select, 
         .input-group input {
             width: 100%;
             padding: 12px;
@@ -103,22 +107,6 @@
         <div class="main-title">📦 한진 집하 수수료 계산기</div>
 
         <div class="input-group">
-            <label for="calc_type">타입 (선불 / 신용)</label>
-            <select id="calc_type">
-                <option value="선불">선불</option>
-                <option value="신용">신용</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label for="calc_region">급지(과천 : B급지 / 화순, 학암 : C급지)</label>
-            <select id="calc_region">
-                <option value="B">B급지</option>
-                <option value="C">C급지</option>
-            </select>
-        </div>
-
-        <div class="input-group">
             <label for="calc_fare">운임 입력 (원)</label>
             <input type="number" id="calc_fare" placeholder="예: 3000">
         </div>
@@ -131,13 +119,13 @@
             <div style="display: none;"><span id="out_rate">0</span></div>
             
             <div class="result-row total">
-                <span>예상 수수료</span>
+                <span>예상 집하 수수료</span>
                 <span class="total-price"><span id="out_result">0</span> 원</span>
             </div>
         </div>
 
         <div class="notice-box">
-            <p>💡 일반적으로는 <strong>총운임 - 사회적합의비용(170원)</strong> 기준으로 금액별 수수료 발생하여 정산되나, 사회적합의비용 제외 다른 항목에서 기타비용이(도서산간, 항공료 등등)  추가 발생할 경우 예상 수수료보다 낮은 수수료가 책정될 수 있습니다.</p>
+            <p>💡 일반적으로는 <strong>총운임 - 사회적합의비용(170원)</strong> 기준으로 금액별 수수료 발생하여 정산되나, 사회적합의비용 제외 다른 항목에서 기타비용이(도서산간, 항공료 등등) 추가 발생할 경우 예상 수수료보다 낮은 수수료가 책정될 수 있습니다.</p>
             <p>💡 집하 영업 시 평균 단가 참고하는 용도로만 사용 부탁드리겠습니다.</p>
         </div>
     </div>
@@ -147,6 +135,7 @@
         function find_rate(type, region, baseFare) {
             const thresholds = [0, 1400, 1500, 1600, 1700, 1800, 2000, 2300, 2501, 3500, 4000, 5000];
             
+            // 기존 요율 데이터 전체 온전히 보존
             const data_prepaid = {
                 'A': [8, 8, 9, 11, 12, 16, 19, 21, 26.5, 26.5, 31.5, 36.5],
                 'B': [8, 8, 9, 11, 12, 16, 19, 21, 28.5, 28.5, 33.5, 38.5],
@@ -186,8 +175,9 @@
         }
 
         function run_calculation() {
-            const type = document.getElementById("calc_type").value;
-            const region = document.getElementById("calc_region").value;
+            // 외부 선택창 대신 내부에서 자동으로 '선불' 및 'C'급지로 세팅하여 연산
+            const type = "선불";
+            const region = "C";
             const fareValue = document.getElementById("calc_fare").value.trim();
             const fare = parseFloat(fareValue);
 
@@ -199,6 +189,7 @@
             const baseFare = fare - 170;
             const rate = find_rate(type, region, baseFare);
             
+            // 기존 집하 수수료 요율 계산 공식 적용 (최종 금액의 85% 반영 후 반올림)
             const finalFee = baseFare * (rate / 100) * 0.85;
 
             const outRateEl = document.getElementById("out_rate");
@@ -210,7 +201,6 @@
             }
         }
 
-        
         document.addEventListener("DOMContentLoaded", function() {
             const calcBtn = document.getElementById('calc_btn');
             if (calcBtn) {
